@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Button from '@mui/material/Button';
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
           <code className='font-mono font-bold'>src/app/page.tsx</code>
         </p>
       </div>
+      <Button variant="text">Text</Button>
 
       <div className='mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left'>
         <a
