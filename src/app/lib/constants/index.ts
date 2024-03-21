@@ -55,3 +55,7 @@ export const HttpStatus = {
   GATEWAY_TIMEOUT: 504,
   HTTP_VERSION_NOT_SUPPORTED: 505,
 };
+
+export const COOKIE_NAME = {
+  ACCESS_TOKEN: 'accessToken'
+}

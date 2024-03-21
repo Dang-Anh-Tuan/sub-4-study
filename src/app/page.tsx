@@ -1,7 +1,15 @@
-import Image from 'next/image'
-import Button from '@mui/material/Button';
+'use client'
+import Button from '@mui/material/Button'
+import { useAppDispatch, useAppSelector } from './lib/redux/hook'
+import { increaseCount, selectCount } from './lib/redux/count/countSlice'
 
 export default function Home() {
+  const count = useAppSelector(selectCount)
+  const dispatch = useAppDispatch()
+
+  const increase = () => {
+    dispatch(increaseCount(1))
+  }
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
       <div className='z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex'>
@@ -10,7 +18,12 @@ export default function Home() {
           <code className='font-mono font-bold'>src/app/page.tsx</code>
         </p>
       </div>
-      <Button variant="text">Text</Button>
+      <div className='flex flex-col items-center'>
+        <h3 className='text-[24px] font-bold'>{count}</h3>
+        <Button variant='contained' onClick={increase}>
+          Increase
+        </Button>
+      </div>
 
       <div className='mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left'>
         <a
