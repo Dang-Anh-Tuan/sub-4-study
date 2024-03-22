@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import countReducer from './count/countSlice'
+import { authService } from '../../api/authService'
 
 export const store = configureStore({
   reducer: {
-    count: countReducer
+    count: countReducer,
+    [authService.reducerPath]: authService.reducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authService.middleware)
 })
 
 // Infer the type of makeStore
