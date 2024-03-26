@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import countReducer from './count/countSlice'
+import authReducer from './auth/authSlice'
 import { authService } from '../../api/authService'
 
 export const store = configureStore({
   reducer: {
     count: countReducer,
+    auth: authReducer,
     [authService.reducerPath]: authService.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authService.middleware)

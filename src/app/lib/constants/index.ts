@@ -2,8 +2,8 @@ export const METHOD_HTTP = {
   GET: 'GET',
   POST: 'POST',
   PUT: 'PUT',
-  DELETE: 'DELETE',
-};
+  DELETE: 'DELETE'
+}
 
 export const HttpStatus = {
   CONTINUE: 100,
@@ -53,9 +53,21 @@ export const HttpStatus = {
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
-  HTTP_VERSION_NOT_SUPPORTED: 505,
-};
+  HTTP_VERSION_NOT_SUPPORTED: 505
+}
 
 export const COOKIE_NAME = {
   ACCESS_TOKEN: 'accessToken'
 }
+
+export const MESSAGE = {
+  REQUIRE: 'Field is required',
+  EMAIL_NOT_VALID: 'Email not valid',
+  MIN_PASSWORD: 'Password is too short - should be 8 chars minimum.',
+  FORM_PASSWORD: 'Password must contain at least one uppercase letter, one number, and one special character',
+  CONFIRM_PASSWORD_NOT_SAME: 'Confirm password is not same password',
+  REGISTER_SUCCESS: 'Register success',
+  SOMETHING_WRONG: 'Something went wrong'
+}
+
+export const REGEX_PASSWORD = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
