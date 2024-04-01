@@ -6,6 +6,7 @@ import theme from '../theme'
 import StoreProvider from './components/StoreProvider'
 import './globals.css'
 import { ToastContainer } from 'react-toastify'
+import AuthProvider from './components/AuthProvider'
 
 export default function RootLayout({
   children
@@ -17,7 +18,9 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider options={{ key: 'css' }}>
           <ThemeProvider theme={theme}>
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </StoreProvider>
           </ThemeProvider>
           <ToastContainer />
         </AppRouterCacheProvider>

@@ -57,7 +57,10 @@ export const HttpStatus = {
 }
 
 export const COOKIE_NAME = {
-  ACCESS_TOKEN: 'accessToken'
+  ACCESS_TOKEN: 'accessToken',
+  REFRESH_TOKEN: 'refreshToken',
+  ACCESS_TOKEN_EXP: 'accessTokenExp',
+  REFRESH_TOKEN_EXP: 'refreshTokenExp',
 }
 
 export const MESSAGE = {
@@ -67,6 +70,7 @@ export const MESSAGE = {
   FORM_PASSWORD: 'Password must contain at least one uppercase letter, one number, and one special character',
   CONFIRM_PASSWORD_NOT_SAME: 'Confirm password is not same password',
   REGISTER_SUCCESS: 'Register success',
+  LOGIN_SUCCESS: 'Login success',
   SOMETHING_WRONG: 'Something went wrong'
 }
 

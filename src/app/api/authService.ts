@@ -11,8 +11,33 @@ export const authService = createApi({
         method: 'POST',
         body: payload
       })
+    }),
+    login: builder.mutation({
+      query: (payload) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: payload
+      })
+    }),
+    refresh: builder.mutation({
+      query: (payload) => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        body: payload
+      })
+    }),
+    getMeWithoutReauth: builder.mutation<IResponse, void>({
+      query: () => ({
+        url: '/users/me',
+        method: 'GET'
+      })
     })
   })
 })
 
-export const { useRegisterMutation } = authService
+export const { 
+  useRegisterMutation, 
+  useLoginMutation, 
+  useRefreshMutation, 
+  useGetMeWithoutReauthMutation 
+} = authService

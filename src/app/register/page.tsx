@@ -12,6 +12,8 @@ import { useRegisterMutation } from '../api/authService'
 import FormInput from '../components/common/Form/FormInput'
 import { HttpStatus, MESSAGE, REGEX_PASSWORD } from '../lib/constants'
 import { useToast } from '../lib/hooks/useToast'
+import { useAuth } from '../lib/hooks/useAuth'
+import { useRouter } from 'next/navigation'
 
 interface pageProps {}
 
@@ -33,12 +35,14 @@ const schema = yup
   })
   .required()
 
-const page: FC<pageProps> = ({}) => {
+const RegisterPage: FC<pageProps> = ({}) => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
   const [errorConfirmPassword, setErrorConfirmPassword] = useState<string>('')
   const [register] = useRegisterMutation()
   const toast = useToast()
+  const { login } = useAuth()
+  const router = useRouter()
 
   const {
     control,
@@ -63,10 +67,14 @@ const page: FC<pageProps> = ({}) => {
       setErrorConfirmPassword('')
 
       const { data: res }: any = await register(data)
-      console.log(res)
-
       if (res.status === HttpStatus.OK) {
         toast.success(MESSAGE.REGISTER_SUCCESS)
+        const isLoginSuccess = await login({ username: data.username, password: data.password })
+        if (isLoginSuccess) {
+          router.push('/')
+        }
+      } else if (res.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+        toast.error(res?.error)
       } else {
         toast.error(MESSAGE.SOMETHING_WRONG)
       }
@@ -172,4 +180,4 @@ const page: FC<pageProps> = ({}) => {
   )
 }
 
-export default page
+export default RegisterPage
