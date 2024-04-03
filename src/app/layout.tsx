@@ -7,19 +7,33 @@ import StoreProvider from './components/StoreProvider'
 import './globals.css'
 import { ToastContainer } from 'react-toastify'
 import AuthProvider from './components/AuthProvider'
+import { usePathname } from 'next/navigation'
+import SideBar from './components/common/SideBar'
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const pathname = usePathname()
+  const authenUrls = ['/login', '/register']
+
   return (
     <html lang='en'>
       <body>
         <AppRouterCacheProvider options={{ key: 'css' }}>
           <ThemeProvider theme={theme}>
             <StoreProvider>
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>
+                {authenUrls.includes(pathname) ? (
+                  children
+                ) : (
+                  <div className='flex'>
+                    <SideBar />
+                    <div className='flex-1'>{children}</div>
+                  </div>
+                )}
+              </AuthProvider>
             </StoreProvider>
           </ThemeProvider>
           <ToastContainer />
