@@ -1,13 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit'
-import countReducer from './count/countSlice'
-import authReducer from './auth/authSlice'
-import { authService } from '../../api/authService'
 import { userService } from '@/app/api/userService'
+import { configureStore } from '@reduxjs/toolkit'
+import { authService } from '../../api/authService'
+import authReducer from './auth/authSlice'
+import systemReducer from './system/systemSlice'
+import countReducer from './count/countSlice'
+import editorReducer from './editor/editorSlice'
 
 export const store = configureStore({
   reducer: {
     count: countReducer,
     auth: authReducer,
+    system: systemReducer,
+    editor: editorReducer,
     [authService.reducerPath]: authService.reducer,
     [userService.reducerPath]: userService.reducer
   },

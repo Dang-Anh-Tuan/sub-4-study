@@ -1,17 +1,23 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import ReactAudioPlayer from 'react-audio-player'
 import { FileWithTempUrl } from '../../sub-version/create/page'
+import Draggable, { DraggableData } from '../common/Draggable'
 import RulerTime from './RulerTime'
-import Draggable, { DraggableData, DraggableEvent, DraggableEventHandler } from 'react-draggable'
+import TextEditItem, { TextEditItemData } from './TextEditItem'
+import { useAppDispatch } from '@/app/lib/redux/hook'
+import { updateCurrentTime } from '@/app/lib/redux/editor/editorSlice'
 
 interface TimelineBarProps {
   file: FileWithTempUrl
+  editItems?: TextEditItemData[]
 }
 
-const TimelineBar: FC<TimelineBarProps> = ({ file }) => {
+const TimelineBar: FC<TimelineBarProps> = ({ file, editItems }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [leftStick, setLeftStick] = useState(0)
+  const [dataDrag, setDataDrag] = useState({ x: 0, y: 0 })
+  const [dataDragEditTextItem, setDataDragEditTextItem] = useState({})
   const audioRef = useRef<any>()
   const containerRulerRef = useRef<HTMLDivElement>(null)
   const stickRef = useRef<HTMLDivElement>(null)
@@ -19,29 +25,61 @@ const TimelineBar: FC<TimelineBarProps> = ({ file }) => {
     width: 0,
     height: 0
   })
+  const dispatch = useAppDispatch()
+
+  const handleSetCurrentTime = (time: number) => {
+    setCurrentTime(time)
+    dispatch(updateCurrentTime(time))
+  }
 
   const handleListen = () => {
-    setCurrentTime(Math.floor(audioRef?.current?.currentTime) ?? 0)
+    handleSetCurrentTime(audioRef?.current?.currentTime ?? 0)
   }
 
   const handleLoadedMetadata = () => {
-    setDuration(Math.floor(audioRef.current?.duration ?? 0))
+    setDuration(audioRef.current?.duration ?? 0)
   }
 
   const handleChangeCurrentTime: (e: Event) => void = () => {
-    setCurrentTime(Math.floor(audioRef?.current?.currentTime) ?? 0)
+    handleSetCurrentTime(audioRef?.current?.currentTime ?? 0)
   }
 
-  const handleDragStick: DraggableEventHandler = (e: DraggableEvent, data: DraggableData) => {
+  const handleDragStick = (data: DraggableData) => {
     const { x } = data
-    const timeToSet = (x / rectContainerRuler.width) * duration
-    if (audioRef?.current) {
+    setDataDrag((pre) => ({ ...pre, x }))
+  }
+
+  const handleUpdateTimeFollowDragData = () => {
+    setLeftStick(dataDrag.x)
+    const timeToSet = (dataDrag.x / rectContainerRuler.width) * duration
+
+    if (audioRef?.current && duration && rectContainerRuler.width) {
       audioRef.current.currentTime = timeToSet
     }
   }
 
+  function getPositionWithTime(time: number) {
+    return (!audioRef?.current ? 0 : time / duration) * rectContainerRuler.width
+  }
+
+  function getWidthFromTime(startTime: number, endTime: number) {
+    return ((endTime - startTime) / duration) * rectContainerRuler.width
+  }
+
+  function onDragEditTextItem(data: DraggableData, id: string) {
+    setDataDragEditTextItem((pre) => ({ ...pre, [id]: data }))
+  }
+
   useEffect(() => {
-    setLeftStick((!audioRef?.current ? 0 : currentTime / duration) * 100)
+    handleUpdateTimeFollowDragData()
+  }, [dataDrag.x, dataDrag.y])
+
+  useEffect(() => {
+    console.log('update position edit text')
+  }, [dataDragEditTextItem])
+
+  useEffect(() => {
+    setLeftStick(getPositionWithTime(currentTime))
   }, [rectContainerRuler, currentTime, duration, audioRef])
 
   useEffect(() => {
@@ -81,21 +119,27 @@ const TimelineBar: FC<TimelineBarProps> = ({ file }) => {
           }}
           onListen={handleListen}
           onSeeked={handleChangeCurrentTime}
-          listenInterval={500}
+          listenInterval={200}
         />
       </div>
-
       <div ref={containerRulerRef} className='h-[100px]  relative'>
         <div className='absolute top-0 left-0 w-full'>
-          <RulerTime duration={Math.floor(duration)} numOfMajorTick={5} numOfMinorTick={5} />
+          <RulerTime duration={duration} numOfMajorTick={5} numOfMinorTick={5} />
         </div>
-        <Draggable axis='x' bounds={{ left: 0, right: rectContainerRuler.width }} onDrag={handleDragStick}>
+        <Draggable
+          axis='x'
+          isLimitParent
+          isOffsetParent
+          handleDrag={(data) => {
+            handleDragStick(data)
+          }}
+        >
           <div
             ref={stickRef}
-            className='absolute top-[-20px] flex flex-col items-start'
-            // style={{
-            //   left: `${leftStick}%`
-            // }}
+            className='absolute top-[-20px] flex flex-col items-start z-10'
+            style={{
+              transform: `translateX(${leftStick}px)`
+            }}
           >
             <div
               style={{
@@ -109,6 +153,27 @@ const TimelineBar: FC<TimelineBarProps> = ({ file }) => {
             <div className='border-r-2 border-blue-500 border-dashed h-[100px]'></div>
           </div>
         </Draggable>
+        <div className='relative  w-full h-full'>
+          {editItems &&
+            editItems.map((item) => (
+              <Draggable
+                key={item.id}
+                handleDrag={(data) => {
+                  onDragEditTextItem(data, item.id)
+                }}
+              >
+                <div
+                  className='absolute top-[40px]'
+                  style={{
+                    transform: `translateX(${getPositionWithTime(item.startTime)}px)`,
+                    width: `${getWidthFromTime(item.startTime, item.endTime)}px`
+                  }}
+                >
+                  <TextEditItem data={item} />
+                </div>
+              </Draggable>
+            ))}
+        </div>
       </div>
     </div>
   )

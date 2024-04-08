@@ -71,7 +71,8 @@ export const MESSAGE = {
   CONFIRM_PASSWORD_NOT_SAME: 'Confirm password is not same password',
   REGISTER_SUCCESS: 'Register success',
   LOGIN_SUCCESS: 'Login success',
-  SOMETHING_WRONG: 'Something went wrong'
+  SOMETHING_WRONG: 'Something went wrong',
+  EDIT_TEXT_ITEM_EXIST: 'Edit text item existed at current time'
 }
 
 export const REGEX_PASSWORD = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/

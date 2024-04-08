@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   const pathname = usePathname()
-  const authenUrls = ['/login', '/register']
+  const authenUrls = ['/login', '/register', '/sub-version/create']
 
   return (
     <html lang='en'>

@@ -36,3 +36,13 @@ export function displayTime(seconds: number): string {
     return `${remainingSeconds}s`
   }
 }
+
+export function findStartTimeForNewEditItem(editItems: TextEditItemData[], currentTime: number) {
+  let maxEndTime = 0
+  editItems.forEach((item) => {
+    if (item.endTime <= currentTime && item.endTime > maxEndTime) {
+      maxEndTime = item.endTime
+    }
+  })
+  return maxEndTime
+}

@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { FC } from 'react'
 
-const VisuallyHiddenInput = styled('input')({
+export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
   height: 1,
@@ -16,11 +16,12 @@ const VisuallyHiddenInput = styled('input')({
 
 type FormUploadFileProps = {
   text: string
+  hideText?: boolean
   onChangeFile: (file?: File) => void
 } & ButtonProps
 
 const FormUploadFile: FC<FormUploadFileProps> = (props) => {
-  const { text, onChangeFile, ...rest } = props
+  const { text, onChangeFile, hideText = false, ...rest } = props
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0]
@@ -29,7 +30,7 @@ const FormUploadFile: FC<FormUploadFileProps> = (props) => {
 
   return (
     <Button component='label' role={undefined} variant='contained' tabIndex={-1} {...rest}>
-      {text}
+      {hideText ? '' : text}
       <VisuallyHiddenInput type='file' onChange={handleFileChange} />
     </Button>
   )
