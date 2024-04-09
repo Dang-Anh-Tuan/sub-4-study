@@ -46,3 +46,4 @@ export function findStartTimeForNewEditItem(editItems: TextEditItemData[], curre
   })
   return maxEndTime
 }
+ 

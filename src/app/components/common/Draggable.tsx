@@ -1,15 +1,27 @@
 import { clamp } from '@/app/lib/helper/common'
-import { FC, ReactNode, useEffect, useRef, useState } from 'react'
+import { FC, MouseEventHandler, ReactNode, useEffect, useRef, useState } from 'react'
 
 export interface DraggableData {
   x: number
   y: number
+  offsetX: number
+  offsetY: number
+  offsetClickX: number
+  offsetClickY: number
 }
 
 interface DraggableProps {
   axis?: 'x' | 'y'
   isOffsetParent?: boolean
   isLimitParent?: boolean
+  rangeX?: {
+    min?: number
+    max?: number
+  }
+  rangeY?: {
+    min?: number
+    max?: number
+  }
   handleDrag: (data: DraggableData) => any
   children: ReactNode
 }
@@ -19,13 +31,25 @@ const Draggable: FC<DraggableProps> = ({
   isLimitParent = false,
   axis,
   handleDrag,
+  rangeX,
+  rangeY,
   children
 }) => {
   const containerDraggable = useRef<HTMLDivElement>(null)
   const isClickedRef = useRef<boolean>(false)
+  const posMouseStartMove = useRef<any>(null)
 
-  const onStartDrag = () => {
+  const onStartDrag = (e: any) => {
     isClickedRef.current = true
+    const dragEl = containerDraggable.current?.children[0]
+    const rect = dragEl?.getBoundingClientRect()
+
+    posMouseStartMove.current = {
+      x: e.clientX,
+      y: e.clientY,
+      offsetClickX: e.clientX - (rect?.x ?? 0),
+      offsetClickY: e.clientY - (rect?.y ?? 0)
+    }
   }
 
   const onDrag = (e: MouseEvent) => {
@@ -67,11 +91,27 @@ const Draggable: FC<DraggableProps> = ({
         yRes = clamp(yCurrent, minY, maxY)
       }
 
-      handleDrag({ x: xRes, y: yRes })
+      if (rangeX) {
+        xRes = clamp(xCurrent, rangeX?.min ?? -Infinity, rangeX.max ?? Infinity)
+      }
+
+      if (rangeY) {
+        yRes = clamp(xCurrent, rangeY?.min ?? -Infinity, rangeY.max ?? Infinity)
+      }
+
+      handleDrag({
+        x: xRes,
+        y: yRes,
+        offsetX: xMouse - (posMouseStartMove.current?.x ?? 0),
+        offsetY: yMouse - (posMouseStartMove.current?.y ?? 0),
+        offsetClickX: posMouseStartMove.current?.offsetClickX,
+        offsetClickY: posMouseStartMove.current?.offsetClickY
+      })
     }
   }
 
   const onStopDrag = () => {
+    posMouseStartMove.current = null
     isClickedRef.current = false
   }
 

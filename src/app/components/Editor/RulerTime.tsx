@@ -17,7 +17,7 @@ const RulerTime: FC<RulerTimeProps> = ({ duration, numOfMajorTick = 5, numOfMino
   }, [ticks])
 
   return (
-    <div style={{ borderBottom: 'solid 1px #E1E1E3' }} className='h-4 relative '>
+    <div style={{ borderBottom: 'solid 1px #E1E1E3', pointerEvents: 'none' }} className='h-4 relative'>
       {ticks &&
         ticks.map((tick) => (
           <p
