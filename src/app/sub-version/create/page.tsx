@@ -39,7 +39,7 @@ const SubVersionCreatePage: FC<pageProps> = ({}) => {
           {!audioFile ? (
             <FormUploadFile text='Upload audio' onChangeFile={handSelectAudio} startIcon={<CloudUploadIcon />} />
           ) : (
-            <DisplaySub subSentence={appliedEditElements?.[0]?.value ?? ''}></DisplaySub>
+            <DisplaySub editTextItem={appliedEditElements?.[0]}></DisplaySub>
           )}
         </div>
         {audioFile && <TimelineBar file={audioFile} editItems={editTextItems} />}

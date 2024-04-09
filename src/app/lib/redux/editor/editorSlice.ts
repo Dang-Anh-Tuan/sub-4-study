@@ -37,8 +37,6 @@ const initialState = {
 }
 
 const addEditTextAction: CaseReducer<EditorSliceState, PayloadAction<TextEditItemData>> = (state, payload) => {
-  console.log(payload.payload)
-
   state.editTextElements.push(payload.payload)
 }
 
@@ -46,17 +44,31 @@ const updateCurrentTimeAction: CaseReducer<EditorSliceState, PayloadAction<numbe
   state.currentTime = payload.payload
 }
 
+const updateEditTextAction: CaseReducer<EditorSliceState, PayloadAction<TextEditItemData>> = (state, payload) => {
+  const editTextElements = [...state.editTextElements]
+  const indexUpdated = state.editTextElements.findIndex((item) => item.id === payload.payload.id)
+
+  if (indexUpdated > -1) {
+    state.editTextElements = [
+      ...editTextElements.slice(0, indexUpdated),
+      payload.payload,
+      ...editTextElements.slice(indexUpdated + 1)
+    ]
+  }
+}
+
 export const editorSlice = createSlice({
   name: 'editorSlice',
   initialState,
   reducers: {
     addEditText: addEditTextAction,
+    updateEditText: updateEditTextAction,
     updateCurrentTime: updateCurrentTimeAction
   }
 })
 
 const { actions, reducer } = editorSlice
-export const { addEditText, updateCurrentTime } = actions
+export const { addEditText, updateCurrentTime, updateEditText } = actions
 export const selectEditTextElements = (state: RootState) => state.editor.editTextElements
 export const selectCurrentTime = (state: RootState) => state.editor.currentTime
 
